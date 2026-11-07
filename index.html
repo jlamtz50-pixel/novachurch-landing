@@ -248,8 +248,14 @@
       <p class="label label-claro">Programa piloto</p>
       <h2>¿Tu iglesia quiere<br><em>conocer NovaChurch?</em></h2>
       <p>Estamos abriendo el piloto para las primeras iglesias. Escríbenos y te mostramos el sistema con tu propia operación, sin compromiso.</p>
+      <form class="piloto-form" id="formPiloto" novalidate>
+        <label><span>Tu nombre</span><input name="nombre" autocomplete="name" required maxlength="120"></label>
+        <label><span>Iglesia</span><input name="iglesia" autocomplete="organization" required maxlength="160"></label>
+        <label><span>WhatsApp</span><input name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" required placeholder="81 1234 5678" maxlength="20"></label>
+        <button class="btn btn-crema" type="submit">Hablar por WhatsApp <svg aria-hidden="true"><use href="#whatsapp"/></svg></button>
+      </form>
+      <p class="micro claro" id="estadoPiloto" role="status" aria-live="polite"></p>
       <div class="piloto-acciones">
-        <a class="btn btn-crema" href="https://wa.me/528136284326?text=Hola%2C%20quiero%20conocer%20NovaChurch" target="_blank" rel="noopener">Hablar por WhatsApp <svg aria-hidden="true"><use href="#whatsapp"/></svg></a>
         <a class="text-link claro" href="#domingo">Volver a ver un domingo</a>
       </div>
       <p class="micro claro">WhatsApp +52 81 3628 4326 · Monterrey, Nuevo León</p>
@@ -308,6 +314,28 @@
       menu.setAttribute('aria-expanded', 'false');
       menu.textContent = 'Menú';
     });
+  });
+})();
+</script>
+<script>
+// Formulario del piloto: abre WhatsApp con los datos y deja el contacto en el CRM de AppNovaDev (solo crea leads).
+(function () {
+  var f = document.getElementById("formPiloto"); if (!f) return;
+  f.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var d = new FormData(f), tel = String(d.get("whatsapp") || "").replace(/\D/g, "");
+    var estado = document.getElementById("estadoPiloto");
+    if (!String(d.get("nombre")).trim() || !String(d.get("iglesia")).trim() || tel.length < 10) { estado.textContent = "Escribe tu nombre, tu iglesia y un WhatsApp de 10 dígitos."; return; }
+    try {
+      fetch("https://ypwgqmrokeulsqgmiupp.supabase.co/rest/v1/rpc/registrar_lead_landing", {
+        method: "POST", keepalive: true,
+        headers: { "content-type": "application/json", apikey: "sb_publishable_L8Na-EgPnFjPYtNrULzeMQ_f3RS6DEc" },
+        body: JSON.stringify({ p_prod: "novachurch", p_nombre: d.get("nombre"), p_empresa: d.get("iglesia"), p_tel: tel, p_mensaje: "Quiere conocer NovaChurch (programa piloto)" })
+      }).catch(function () {});
+    } catch (e) {}
+    var texto = "Hola, quiero conocer NovaChurch.\nNombre: " + d.get("nombre") + "\nIglesia: " + d.get("iglesia") + "\nWhatsApp: " + tel;
+    window.open("https://wa.me/528136284326?text=" + encodeURIComponent(texto), "_blank", "noopener");
+    estado.textContent = "Abrimos WhatsApp con tus datos. Si no se abrió, escríbenos al +52 81 3628 4326.";
   });
 })();
 </script>

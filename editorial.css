@@ -259,3 +259,12 @@ section { scroll-margin-top: 90px; }
   .btn { transition: none; }
   .btn:hover { transform: none; }
 }
+
+/* Formulario del programa piloto */
+.piloto-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 12px; align-items: end; max-width: 60rem; margin: 0 auto 1rem; text-align: left; }
+.piloto-form label { display: flex; flex-direction: column; gap: 6px; font-size: .85rem; color: rgba(255,253,248,.85); min-width: 0; }
+.piloto-form input { height: 50px; border-radius: 10px; border: 1px solid rgba(255,253,248,.35); background: rgba(255,253,248,.08); color: var(--crema); padding: 0 14px; font: inherit; width: 100%; }
+.piloto-form input::placeholder { color: rgba(255,253,248,.5); }
+.piloto-form input:focus-visible { outline: 3px solid var(--arena); outline-offset: 2px; }
+.piloto-form .btn { height: 50px; justify-content: center; }
+@media (max-width: 760px) { .piloto-form { grid-template-columns: 1fr; } }
